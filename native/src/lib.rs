@@ -4,9 +4,8 @@
 
 use neon::prelude::*;
 
-use neon_serde::export;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{Result, Value};
 use voca_rs::count;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -20,20 +19,27 @@ pub struct DeltaOps {
     insert: Value
 }
 
-export! {
-    fn count_words(delta_body: String) -> Result<u32, &'static str> {
-        let body_content: Delta = match serde_json::from_str(&delta_body) {
-            Ok(delta) => delta,
-            Err(_) => return Err("Could not parse the delta body.")
-        };
-        let all_text = body_content
-            .ops
-            .iter()
-            .filter(|x| x.insert.is_string())
-            .map(|x| x.insert.as_str().unwrap())
-            .collect::<String>();
-        
-        let word_count = count::count_words(&all_text, "");
-        Ok(word_count as u32)
+fn count_words(mut ctx: FunctionContext) -> JsResult<JsNumber> {
+    let body_text = ctx.argument::<JsString>(0)?.value();
+    match try_count_words(&body_text) {
+        Ok(count) => Ok(ctx.number(count)),
+        Err(_e) => Err(neon::result::Throw)
     }
 }
+
+fn try_count_words(text: &str) -> Result<u32> {
+    let work_content: Delta = serde_json::from_str(text)?;
+    let all_text = work_content
+        .ops
+        .iter()
+        .filter(|x| x.insert.is_string())
+        .map(|x| x.insert.as_str().unwrap())
+        .collect::<String>();
+    let word_count = count::count_words(&all_text, "");
+    Ok(word_count as u32)
+}
+
+register_module!(mut m, {
+    m.export_function("countWords", count_words)?;
+    Ok(())
+});
