@@ -1,5 +1,5 @@
 {
-  "name": "word-counter",
+  "name": "@offprintstudios/word-counter",
   "version": "0.1.0",
   "description": "Parses QuillJS Deltas and determines the word count of any inputted body text",
   "main": "lib/index.js",
@@ -10,5 +10,6 @@
   },
   "scripts": {
     "install": "neon build"
-  }
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }

@@ -37,7 +37,3 @@ export! {
         Ok(word_count as u32)
     }
 }
-
-/*register_module!(mut cx, {
-    cx.export_function("hello", hello)
-});*/
