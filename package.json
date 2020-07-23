@@ -1,6 +1,6 @@
 {
   "name": "@offprintstudios/word-counter",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Parses QuillJS Deltas and determines the word count of any inputted body text",
   "main": "lib/index.js",
   "author": "Alyx Mote <figments@outlook.com>",
@@ -11,7 +11,21 @@
   "scripts": {
     "install": "neon build"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OffprintStudios/word-counter.git"
+  },
+  "keywords": [
+    "quilljs",
+    "delta",
+    "word",
+    "counter"
+  ],
+  "bugs": {
+    "url": "https://github.com/OffprintStudios/word-counter/issues"
+  },
+  "homepage": "https://github.com/OffprintStudios/word-counter#readme"
 }
