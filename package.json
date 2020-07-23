@@ -1,0 +1,14 @@
+{
+  "name": "word-counter",
+  "version": "0.1.0",
+  "description": "Parses QuillJS Deltas and determines the word count of any inputted body text",
+  "main": "lib/index.js",
+  "author": "Alyx Mote <figments@outlook.com>",
+  "license": "MIT",
+  "dependencies": {
+    "neon-cli": "^0.4.0"
+  },
+  "scripts": {
+    "install": "neon build"
+  }
+}
