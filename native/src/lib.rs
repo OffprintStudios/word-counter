@@ -29,7 +29,7 @@ fn count_words(mut ctx: FunctionContext) -> JsResult<JsNumber> {
     }
 }
 
-pub fn try_count_words(text: &str) -> Result<u32> {
+fn try_count_words(text: &str) -> Result<u32> {
     let work_content: Delta = serde_json::from_str(text)?;
     let mut string_builder = String::new();
     for chunk in work_content.ops.iter().map(|x| &x.insert) {
