@@ -5,18 +5,20 @@
 use neon::prelude::*;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{Result, Value};
+use serde_json::{value::RawValue, Result, Value};
 use voca_rs::count;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Delta {
-    ops: Vec<DeltaOps>
+pub struct Delta<'a> {
+    #[serde(borrow)]
+    ops: Vec<DeltaOps<'a>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct DeltaOps {
-    attributes: Option<Value>,
-    insert: Value
+pub struct DeltaOps<'a> {
+    insert: String,
+    #[serde(borrow)]
+    attributes: Option<&'a RawValue>,
 }
 
 fn count_words(mut ctx: FunctionContext) -> JsResult<JsNumber> {
@@ -29,13 +31,11 @@ fn count_words(mut ctx: FunctionContext) -> JsResult<JsNumber> {
 
 fn try_count_words(text: &str) -> Result<u32> {
     let work_content: Delta = serde_json::from_str(text)?;
-    let all_text = work_content
-        .ops
-        .iter()
-        .filter(|x| x.insert.is_string())
-        .map(|x| x.insert.as_str().unwrap())
-        .collect::<String>();
-    let word_count = count::count_words(&all_text, "");
+    let mut string_builder = String::new();
+    for chunk in work_content.ops.iter().map(|x| &x.insert) {
+        string_builder.push_str(chunk);
+    }
+    let word_count = count::count_words(&string_builder, "");
     Ok(word_count as u32)
 }
 
